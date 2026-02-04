@@ -350,7 +350,7 @@ body {
 .chat-header-avatar svg {
     width: 28px;
     height: 28px;
-    fill: #667eea;
+    stroke: #667eea;
 }
 
 .chat-header-info h3 {
@@ -424,7 +424,7 @@ body {
 .bot-icon svg {
     width: 36px;
     height: 36px;
-    fill: #fff;
+    stroke: #fff;
 }
 
 .welcome-message h2 {
@@ -525,9 +525,9 @@ body {
 }
 
 .message.bot .message-avatar svg {
-    width: 22px;
-    height: 22px;
-    fill: #fff;
+    width: 24px;
+    height: 24px;
+    stroke: #fff;
 }
 
 .message.user .message-avatar {
@@ -715,6 +715,8 @@ body {
         font-size: 2.5rem;
     }
 }
+
+/* Feedback Actions */
 .feedback-actions {
     display: flex;
     gap: 10px;
