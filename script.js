@@ -15,10 +15,24 @@ const notificationBadge = document.getElementById('notificationBadge');
 // State
 let messageCount = 0;
 
-// Bot Avatar SVG
+// Bot Avatar SVG - Updated Robot Icon
 const botAvatarSVG = `
-<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="currentColor">
-    <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Antenna -->
+    <line x1="50" y1="15" x2="50" y2="30"/>
+    <circle cx="50" cy="10" r="5"/>
+    <!-- Head -->
+    <rect x="25" y="30" width="50" height="40" rx="8"/>
+    <!-- Eyes -->
+    <circle cx="38" cy="45" r="6"/>
+    <circle cx="62" cy="45" r="6"/>
+    <!-- Mouth -->
+    <rect x="35" y="58" width="30" height="6" rx="2"/>
+    <!-- Ears -->
+    <rect x="18" y="42" width="7" height="16" rx="2"/>
+    <rect x="75" y="42" width="7" height="16" rx="2"/>
+    <!-- Neck -->
+    <rect x="42" y="70" width="16" height="8"/>
 </svg>
 `;
 
@@ -33,7 +47,6 @@ const responses = {
 // Initialize
 function init() {
     setupEventListeners();
-    loadChatHistory();
 }
 
 // Event Listeners
@@ -68,6 +81,17 @@ function openChat() {
 function closeChat() {
     chatWindow.classList.remove('active');
     chatButton.classList.remove('hidden');
+    chatInput.value = ''; // Clear input
+    
+    // Clear all messages
+    messagesContainer.innerHTML = '';
+    
+    // Show welcome message and quick questions again
+    welcomeMessage.style.display = 'block';
+    quickQuestions.style.display = 'flex';
+    
+    // Reset message count
+    messageCount = 0;
 }
 
 function toggleMinimize() {
@@ -104,7 +128,7 @@ function sendUserMessage(text) {
     }, 1200);
 }
 
-// 🔥 UPDATED FUNCTION WITH FEEDBACK BUTTONS
+// Add message with feedback buttons
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${sender}`;
@@ -140,15 +164,14 @@ function addMessage(text, sender) {
         dislikeBtn.innerHTML = '👎';
 
         likeBtn.onclick = () => {
-    likeBtn.style.display = 'inline-block';  // show like
-    dislikeBtn.style.display = 'none';       // hide dislike
-};
+            likeBtn.style.display = 'inline-block';
+            dislikeBtn.style.display = 'none';
+        };
 
-dislikeBtn.onclick = () => {
-    dislikeBtn.style.display = 'inline-block'; // show dislike
-    likeBtn.style.display = 'none';            // hide like
-};
-
+        dislikeBtn.onclick = () => {
+            dislikeBtn.style.display = 'inline-block';
+            likeBtn.style.display = 'none';
+        };
 
         feedbackDiv.appendChild(likeBtn);
         feedbackDiv.appendChild(dislikeBtn);
@@ -168,7 +191,6 @@ dislikeBtn.onclick = () => {
 
     messageCount++;
     scrollToBottom();
-    saveChatHistory();
 }
 
 // Bot logic
@@ -199,27 +221,9 @@ function getCurrentTime() {
 }
 
 function scrollToBottom() {
-    chatBody.scrollTop = chatBody.scrollHeight;
-}
-
-// Storage
-function saveChatHistory() {
-    const messages = Array.from(messagesContainer.children).map(msg => ({
-        sender: msg.classList.contains('user') ? 'user' : 'bot',
-        text: msg.querySelector('.message-bubble').textContent,
-        time: msg.querySelector('.message-time').textContent
-    }));
-    localStorage.setItem('chatMessages', JSON.stringify(messages));
-}
-
-function loadChatHistory() {
-    const data = JSON.parse(localStorage.getItem('chatMessages') || '[]');
-    data.forEach(m => addMessageFromHistory(m.text, m.sender, m.time));
-}
-
-// History load (with feedback buttons)
-function addMessageFromHistory(text, sender, time) {
-    addMessage(text, sender);
+    setTimeout(() => {
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }, 100);
 }
 
 // Init
