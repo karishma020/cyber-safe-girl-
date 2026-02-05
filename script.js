@@ -70,6 +70,35 @@ function setupEventListeners() {
     });
 }
 
+// Play notification sound
+function playNotificationSound() {
+    try {
+        // Create a simple beep using Web Audio API
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        // Connect nodes
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        // Configure the beep
+        oscillator.frequency.value = 800; // Frequency in Hz (higher = higher pitch)
+        oscillator.type = 'sine'; // Smooth sine wave
+        
+        // Volume envelope (fade in/out for smooth sound)
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.01); // Fade in
+        gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 0.15); // Fade out
+        
+        // Play the beep
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.15); // Short beep duration
+    } catch (error) {
+        console.log('Error playing notification sound:', error);
+    }
+}
+
 // Chat controls
 function openChat() {
     chatWindow.classList.add('active');
@@ -121,6 +150,9 @@ function sendUserMessage(text) {
     setTimeout(() => {
         typingIndicator.classList.remove('active');
         addMessage(getBotResponse(text), 'bot');
+
+        // Play notification sound when bot replies
+        playNotificationSound();
 
         if (!chatWindow.classList.contains('active')) {
             showNotification();
